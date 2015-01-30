@@ -2,14 +2,11 @@ package com.springtests.model;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -28,17 +25,9 @@ public class Performer {
   @Column(name = "PERFORMER")
   private String performerName;
   
-  @ManyToMany(
-      cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-      targetEntity = Programme.class
-  )
-  @JoinTable(
-      name="PROG_PERFORMER",
-      joinColumns=@JoinColumn(name="PERFORMERID"),
-      inverseJoinColumns={@JoinColumn(name="PROGRAMMEID")}
-  )
-  public Set<Programme> programmes;
-
+  @OneToMany(mappedBy = "performer")
+  public Set<ProgEpPerfAssociation> performerAssociations;
+  
   public Long getPerformerId() {
     return performerId;
   }
@@ -47,8 +36,8 @@ public class Performer {
     return performerName;
   }
 
-  public Set<Programme> getProgrammes() {
-    return programmes;
+  public Set<ProgEpPerfAssociation> getPerformerAssociations() {
+    return performerAssociations;
   }
 
   public void setPerformerId(Long performerId) {
@@ -59,8 +48,8 @@ public class Performer {
     this.performerName = performerName;
   }
 
-  public void setProgrammes(Set<Programme> programmes) {
-    this.programmes = programmes;
+  public void setPerformerAssociations(Set<ProgEpPerfAssociation> performerAssociations) {
+    this.performerAssociations = performerAssociations;
   }
 
 }

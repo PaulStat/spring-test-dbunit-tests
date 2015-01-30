@@ -2,19 +2,14 @@ package com.springtests.model;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Immutable;
-import org.hibernate.annotations.Type;
 
 @Entity
 @Immutable
@@ -22,13 +17,12 @@ import org.hibernate.annotations.Type;
 public class Episode {
   
   @Id
-  @GeneratedValue(generator="increment")
-  @GenericGenerator(name="increment", strategy="increment")
+//  @GeneratedValue(generator="increment")
+//  @GenericGenerator(name="increment", strategy="increment")
   private Long episodeId;
   
-  @Type(type="com.springtests.model.Programme")
-  @OneToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
-  @JoinColumn(name="PROGRAMMEID")
+  @ManyToOne
+  @JoinColumn(name="programmeId")
   private Programme programme;
   
   private String subtitle;
@@ -37,16 +31,8 @@ public class Episode {
   
   private String description;
   
-  @ManyToMany(
-      targetEntity=Performer.class,
-      cascade={CascadeType.PERSIST, CascadeType.MERGE}
-  )
-  @JoinTable(
-      name="PROG_PERFORMER",
-      joinColumns=@JoinColumn(name="EPISODEID"),
-      inverseJoinColumns={@JoinColumn(name="PERFORMERID")}
-  )
-  private Set<Performer> performers;
+  @OneToMany(mappedBy = "episode")      
+  private Set<ProgEpPerfAssociation> episodeAssociations;
 
   public String getDescription() {
     return description;
@@ -60,8 +46,8 @@ public class Episode {
     return episodeId;
   }
 
-  public Set<Performer> getPerformers() {
-    return performers;
+  public Set<ProgEpPerfAssociation> getEpisodeAssociations() {
+    return episodeAssociations;
   }
 
   public Programme getProgramme() {
@@ -84,8 +70,8 @@ public class Episode {
     this.episodeId = episodeId;
   }
 
-  public void setPerformers(Set<Performer> performers) {
-    this.performers = performers;
+  public void setEpisodeAssociations(Set<ProgEpPerfAssociation> episodeAssociations) {
+    this.episodeAssociations = episodeAssociations;
   }
 
   public void setProgramme(Programme programme) {
